@@ -36,5 +36,12 @@ describe 'access_insights_client::current' do
     it { is_expected.to contain_file('/etc/cron.weekly/insights-client').with_ensure('absent') }
     it { is_expected.to contain_exec('/usr/bin/insights-client --register') }
     it { is_expected.to contain_service('insights-client.timer') }
+    it { is_expected.to contain_file('/etc/insights-client/insights-client.conf').with_content("[insights-client]\nauto_config=True\n") }
+
+    context 'with display_name' do
+      let(:params) { { display_name: 'host.example.com' } }
+
+      it { is_expected.to contain_file('/etc/insights-client/insights-client.conf').with_content("[insights-client]\nauto_config=True\ndisplay_name=host.example.com\n") }
+    end
   end
 end

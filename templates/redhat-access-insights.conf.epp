@@ -1,0 +1,10 @@
+<%- |
+  String[1] $package_name,
+  Hash[String[1], Any] $settings,
+| -%>
+[<%= $package_name %>]
+<%- $settings.each |$key, $value| { -%>
+<%- if $value { -%>
+<%= $key %>=<%= $value %>
+<%- } -%>
+<%- } -%>

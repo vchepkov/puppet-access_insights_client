@@ -28,6 +28,8 @@
 #   Whether to obfuscate IP addresses.
 # @param obfuscate_hostname
 #   Whether to obfuscate hostname.
+# @param display_name
+#   Name shown for this system in Red Hat Insights inventory.
 #
 # @author Lindani Phiri <lphiri@redhat.com>
 # @author Dan Varga  <dvarga@redhat.com>
@@ -48,6 +50,7 @@ class access_insights_client::current (
   $auto_update = undef,
   $obfuscate = undef,
   $obfuscate_hostname = undef,
+  Optional[String[1]] $display_name = undef,
 ) {
   package { $package_name:
     ensure => installed,
@@ -59,12 +62,29 @@ class access_insights_client::current (
       '/etc/cron.daily/redhat-access-insights',
       '/etc/cron.weekly/redhat-access-insights',
     ]:
-      ensure  => 'absent',
+      ensure => 'absent',
   }
 
   file { "/etc/${package_name}/${package_name}.conf":
     ensure  => 'file',
-    content => template('access_insights_client/redhat-access-insights.conf.erb'),
+    content => epp('access_insights_client/redhat-access-insights.conf.epp', {
+        package_name => $package_name,
+        settings     => {
+          'loglevel'           => $log_level,
+          'auto_config'        => $auto_config,
+          'authmethod'         => $authmethod,
+          'username'           => $username,
+          'password'           => $password,
+          'base_url'           => $base_url,
+          'proxy'              => $proxy,
+          'cert_verify'        => $cert_verify,
+          'gpg'                => $gpg,
+          'auto_update'        => $auto_update,
+          'obfuscate'          => $obfuscate,
+          'obfuscate_hostname' => $obfuscate_hostname,
+          'display_name'       => $display_name,
+        },
+    }),
     require => Package[$package_name],
   }
 

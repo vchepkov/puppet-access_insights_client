@@ -27,6 +27,8 @@
 #   Whether to obfuscate IP addresses.
 # @param obfuscate_hostname
 #   Whether to obfuscate hostname.
+# @param display_name
+#   Name shown for this system in Red Hat Insights inventory.
 # @param deployment_style
 #   How the module should be deploy. Can be undef (auto),
 #   current (6.10+ or 7.5+) or old.
@@ -49,6 +51,7 @@ class access_insights_client (
   $auto_update = undef,
   $obfuscate = undef,
   $obfuscate_hostname = undef,
+  Optional[String[1]] $display_name = undef,
   Optional[Enum['current', 'old']] $deployment_style = undef,
 ) {
   if $deployment_style {
@@ -75,6 +78,7 @@ class access_insights_client (
     auto_update        => $auto_update,
     obfuscate          => $obfuscate,
     obfuscate_hostname => $obfuscate_hostname,
+    display_name       => $display_name,
   }
   contain "access_insights_client::${class_name}"
 }
